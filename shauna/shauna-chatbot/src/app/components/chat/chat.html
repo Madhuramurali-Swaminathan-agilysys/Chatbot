@@ -1,0 +1,82 @@
+<div class="chat-container">
+  <!-- Header -->
+  <mat-toolbar color="primary" class="chat-header">
+    <div class="header-content">
+      <div class="header-left">
+        <mat-icon class="chatbot-icon">smart_toy</mat-icon>
+        <div class="header-info">
+          <h2>Shauna</h2>
+          <span class="status" [ngClass]="getApiStatusColor()">
+            {{ getApiStatusText() }}
+          </span>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <button 
+          mat-icon-button 
+          matTooltip="Clear chat"
+          (click)="clearChat()"
+          [disabled]="messages.length === 0">
+          <mat-icon>delete_sweep</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Audio Settings" (click)="openSettings()">
+          <mat-icon>settings</mat-icon>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Loading bar -->
+    <mat-progress-bar 
+      mode="indeterminate" 
+      *ngIf="isProcessing"
+      class="loading-bar">
+    </mat-progress-bar>
+  </mat-toolbar>
+
+  <!-- Messages Container -->
+  <div class="messages-container" #messagesContainer>
+    <div class="messages-content">
+      <!-- Welcome message when no messages -->
+      <div class="welcome-message" *ngIf="messages.length === 0">
+        <div class="welcome-avatar">
+          <mat-icon>smart_toy</mat-icon>
+        </div>
+        <h3>Hello! I'm Shauna</h3>
+        <p>I'm your AI assistant. Feel free to ask me anything, attach files, or use voice commands.</p>
+        <div class="welcome-features">
+          <div class="feature">
+            <mat-icon>chat</mat-icon>
+            <span>Text conversations</span>
+          </div>
+          <div class="feature">
+            <mat-icon>mic</mat-icon>
+            <span>Voice input</span>
+          </div>
+          <div class="feature">
+            <mat-icon>attach_file</mat-icon>
+            <span>File uploads</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat messages -->
+      <app-message 
+        *ngFor="let message of messages; trackBy: trackByMessageId"
+        [message]="message">
+      </app-message>
+
+      <!-- API offline message -->
+      <div class="offline-message" *ngIf="!isApiHealthy && !isCheckingHealth">
+        <mat-icon>cloud_off</mat-icon>
+        <p>Shauna is currently offline. Please try again later.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input Area -->
+  <app-chat-input 
+    (messageSubmitted)="onMessageSubmitted($event)"
+    [class.disabled]="!isApiHealthy">
+  </app-chat-input>
+</div>

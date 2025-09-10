@@ -1,0 +1,145 @@
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <h2>Chat Dashboard</h2>
+    <p class="subtitle">Manage your chat history and view past conversations</p>
+  </div>
+
+  <!-- Branding Info Card -->
+  <mat-card class="branding-card" *ngIf="brandingInfo">
+    <mat-card-header>
+      <mat-card-title>{{ brandingInfo.name || 'Shauna' }}</mat-card-title>
+      <mat-card-subtitle>{{ brandingInfo.description || 'AI Assistant' }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="branding-details">
+        <div class="detail-item">
+          <mat-icon>business</mat-icon>
+          <span>{{ brandingInfo.company || 'AI Solutions Inc.' }}</span>
+        </div>
+        <div class="detail-item">
+          <mat-icon>info</mat-icon>
+          <span>Version {{ brandingInfo.version || '1.0.0' }}</span>
+        </div>
+        <div class="detail-item" *ngIf="brandingInfo.features">
+          <mat-icon>star</mat-icon>
+          <span>{{ brandingInfo.features?.length || 0 }} Features Available</span>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Search and Filter Section -->
+  <div class="search-section">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search conversations</mat-label>
+      <input 
+        matInput 
+        [(ngModel)]="searchKeyword" 
+        (input)="onSearch()"
+        placeholder="Search by keywords...">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <div class="date-filters">
+      <mat-form-field appearance="outline">
+        <mat-label>Start Date</mat-label>
+        <input 
+          matInput 
+          [matDatepicker]="startPicker" 
+          [(ngModel)]="startDate"
+          (dateChange)="onDateRangeChange()">
+        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker #startPicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>End Date</mat-label>
+        <input 
+          matInput 
+          [matDatepicker]="endPicker" 
+          [(ngModel)]="endDate"
+          (dateChange)="onDateRangeChange()">
+        <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+        <mat-datepicker #endPicker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <button 
+      mat-raised-button 
+      color="warn" 
+      (click)="clearAllHistory()"
+      [disabled]="chatSessions.length === 0">
+      <mat-icon>delete_forever</mat-icon>
+      Clear All History
+    </button>
+  </div>
+
+  <!-- Chat Sessions List -->
+  <div class="sessions-container">
+    <div class="sessions-header">
+      <h3>Recent Chat Sessions ({{ filteredSessions.length }})</h3>
+    </div>
+
+    <div class="sessions-list" *ngIf="filteredSessions.length > 0">
+      <mat-card 
+        *ngFor="let session of filteredSessions; trackBy: trackBySessionId"
+        class="session-card"
+        [class.selected]="selectedSession?.id === session.id"
+        (click)="loadSession(session)">
+        
+        <mat-card-header>
+          <mat-card-title>{{ session.title }}</mat-card-title>
+          <mat-card-subtitle>
+            {{ formatDate(session.startTime) }}
+          </mat-card-subtitle>
+          <div class="session-actions">
+            <button 
+              mat-icon-button 
+              matTooltip="Delete session"
+              (click)="deleteSession(session, $event)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </mat-card-header>
+
+        <mat-card-content>
+          <p class="session-preview">{{ getSessionPreview(session) }}</p>
+          
+          <div class="session-stats">
+            <div class="stat-item">
+              <mat-icon>chat</mat-icon>
+              <span>{{ getMessageCount(session) }} messages</span>
+            </div>
+            
+            <div class="stat-item" *ngIf="hasVoiceMessages(session)">
+              <mat-icon>mic</mat-icon>
+              <span>Voice</span>
+            </div>
+            
+            <div class="stat-item" *ngIf="hasFileAttachments(session)">
+              <mat-icon>attach_file</mat-icon>
+              <span>Files</span>
+            </div>
+          </div>
+
+          <div class="session-time">
+            Last activity: {{ formatDate(session.lastActivity) }}
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="filteredSessions.length === 0">
+      <mat-icon>history</mat-icon>
+      <h3>No chat sessions found</h3>
+      <p *ngIf="searchKeyword || startDate || endDate">
+        Try adjusting your search criteria or date range.
+      </p>
+      <p *ngIf="!searchKeyword && !startDate && !endDate && chatSessions.length === 0">
+        Start a conversation to see your chat history here.
+      </p>
+    </div>
+  </div>
+</div>

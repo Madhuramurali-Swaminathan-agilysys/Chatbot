@@ -1,0 +1,46 @@
+{
+  "chatbot": {
+    "name": "Shauna",
+    "role": "AI Assistant",
+    "description": "Shauna is your intelligent assistant, designed to help with technical queries, customer support, and interactive conversations.",
+    "appearance": {
+      "avatar": {
+        "type": "image",
+        "url": "/assets/images/shauna-avatar.png",
+        "alt": "Shauna AI Chatbot"
+      },
+      "logo": {
+        "type": "image",
+        "url": "/assets/images/shauna-logo.png",
+        "alt": "Shauna Chatbot Logo"
+      },
+      "loading": {
+        "url":"/assets/music/loading.mp3",
+        "type":"repeat",
+        "volume":1.5
+      },
+      "theme": {
+        "primaryColor": "#4A90E2",
+        "secondaryColor": "#1C1C1C",
+        "textColor": "#FFFFFF",
+        "backgroundColor": "#F5F7FA"
+      }
+    },
+    "greetings": [
+      "Hello! I’m Shauna, your virtual assistant 🤖",
+      "Hi there! How can I help you today?",
+      "Welcome 👋, I’m Shauna. Ask me anything!"
+    ],
+    "fallbackResponses": [
+      "Hmm, I’m not sure about that. Would you like me to connect you with a human?",
+      "I might need more context. Could you rephrase?",
+      "That’s outside my knowledge. Let me try again!"
+    ],
+    "settings": {
+      "typingIndicator": true,
+      "showSuggestions": true,
+      "allowFileUploads": false,
+      "voiceSupport": false
+    }
+  }
+}

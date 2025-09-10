@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Chatbot with Attachments</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .chat-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .chat-history {
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #fafafa;
+            border-radius: 5px;
+        }
+        .message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .user-message {
+            background-color: #007bff;
+            color: white;
+            text-align: right;
+        }
+        .ai-message {
+            background-color: #28a745;
+            color: white;
+        }
+        .input-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .message-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            resize: vertical;
+            min-height: 60px;
+        }
+        .file-input {
+            padding: 10px;
+            border: 2px dashed #ddd;
+            border-radius: 5px;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+        .send-button {
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .send-button:hover {
+            background-color: #0056b3;
+        }
+        .send-button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .attachment-preview {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .loading {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>Enhanced Chatbot with Attachment Support</h1>
+        
+        <div id="chatHistory" class="chat-history">
+            <div class="message ai-message">
+                <strong>Shauna:</strong> Hi there! I'm Shauna, your AI assistant. You can ask me questions and even upload files for me to analyze. How can I help you today?
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <div class="file-input">
+                <input type="file" id="fileInput" multiple accept="*/*">
+                <label for="fileInput">📎 Click to attach files or drag & drop</label>
+            </div>
+            
+            <div id="attachmentPreview"></div>
+            
+            <textarea 
+                id="messageInput" 
+                class="message-input" 
+                placeholder="Type your message here..."
+                rows="3"
+            ></textarea>
+            
+            <button id="sendButton" class="send-button">Send Message</button>
+        </div>
+    </div>
+
+    <script>
+        const chatHistory = document.getElementById('chatHistory');
+        const messageInput = document.getElementById('messageInput');
+        const fileInput = document.getElementById('fileInput');
+        const sendButton = document.getElementById('sendButton');
+        const attachmentPreview = document.getElementById('attachmentPreview');
+        
+        let selectedFiles = [];
+        
+        // Handle file selection
+        fileInput.addEventListener('change', function(e) {
+            selectedFiles = Array.from(e.target.files);
+            updateAttachmentPreview();
+        });
+        
+        // Handle drag and drop
+        const fileInputContainer = document.querySelector('.file-input');
+        fileInputContainer.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.backgroundColor = '#e3f2fd';
+        });
+        
+        fileInputContainer.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.backgroundColor = '#f9f9f9';
+        });
+        
+        fileInputContainer.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.backgroundColor = '#f9f9f9';
+            selectedFiles = Array.from(e.dataTransfer.files);
+            updateAttachmentPreview();
+        });
+        
+        function updateAttachmentPreview() {
+            if (selectedFiles.length === 0) {
+                attachmentPreview.innerHTML = '';
+                return;
+            }
+            
+            const preview = selectedFiles.map(file => 
+                `<div>📎 ${file.name} (${(file.size / 1024).toFixed(1)} KB)</div>`
+            ).join('');
+            
+            attachmentPreview.innerHTML = `
+                <div class="attachment-preview">
+                    <strong>Attachments (${selectedFiles.length}):</strong><br>
+                    ${preview}
+                    <button onclick="clearAttachments()" style="margin-top: 5px; font-size: 12px;">Clear All</button>
+                </div>
+            `;
+        }
+        
+        function clearAttachments() {
+            selectedFiles = [];
+            fileInput.value = '';
+            updateAttachmentPreview();
+        }
+        
+        // Send message function
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message && selectedFiles.length === 0) return;
+            
+            // Disable send button
+            sendButton.disabled = true;
+            sendButton.textContent = 'Sending...';
+            
+            // Add user message to chat
+            addMessageToChat('user', message, selectedFiles.map(f => f.name));
+            
+            try {
+                let response;
+                
+                if (selectedFiles.length > 0) {
+                    // Use form data for file uploads
+                    const formData = new FormData();
+                    formData.append('message', message);
+                    
+                    selectedFiles.forEach(file => {
+                        formData.append('files', file);
+                    });
+                    
+                    response = await fetch('/api/chat/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                } else {
+                    // Use JSON for text-only messages
+                    response = await fetch('/api/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            message: message,
+                            attachments: []
+                        })
+                    });
+                }
+                
+                const data = await response.json();
+                
+                if (data.response) {
+                    addMessageToChat('ai', data.response);
+                } else {
+                    addMessageToChat('ai', 'Sorry, I encountered an error processing your request.');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                addMessageToChat('ai', 'Sorry, I encountered a connection error. Please try again.');
+            }
+            
+            // Reset form
+            messageInput.value = '';
+            clearAttachments();
+            sendButton.disabled = false;
+            sendButton.textContent = 'Send Message';
+        }
+        
+        function addMessageToChat(sender, message, files = []) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            let filesText = '';
+            if (files.length > 0) {
+                filesText = `<br><small>📎 Attachments: ${files.join(', ')}</small>`;
+            }
+            
+            messageDiv.innerHTML = `
+                <strong>${sender === 'user' ? 'You' : 'Shauna'}:</strong> 
+                ${message.replace(/\n/g, '<br>')}
+                ${filesText}
+            `;
+            
+            chatHistory.appendChild(messageDiv);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+        
+        // Event listeners
+        sendButton.addEventListener('click', sendMessage);
+        
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

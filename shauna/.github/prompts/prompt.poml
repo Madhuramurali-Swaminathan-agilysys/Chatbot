@@ -1,0 +1,93 @@
+<poml>
+    <role>You are a Senior Angular Developer.
+    </role>
+    <task> Develop a new Angular Chatbot Application 'Shauna' that integrates with a python API hosted locally to support conversational capabilities. The application should feature a user-friendly interface, and the ability to handle complex queries. Ensure the application is responsive and works seamlessly across different devices. Implement robust error handling and logging mechanisms to monitor API interactions and user activities. Additionally, include unit tests and end-to-end tests to ensure the reliability and performance of the application. Provide comprehensive documentation for the codebase and setup instructions for deployment. 
+    </task>
+
+    <task> Project Setup and Configuration </task>
+
+    <list>
+        <item> Initialize a new Angular project using Angular CLI. </item>
+        <item> Set up TypeScript and configure tsconfig.json for optimal performance. </item>
+        <item> Install necessary dependencies including Angular Material for UI components, HttpClientModule for API interactions, and ngx-translate for multi-language support. </item>
+        <item> Configure environment files to securely store API keys and other sensitive information. </item>
+        </list>
+
+    <task> API Wiring and Integration </task>
+    <list>
+        <item> Create a service to handle interactions with Chatbot API running in https://localhost:4000/api. </item>
+        <item> Implement POST method for sending user queries to the API and receiving responses. This uses route /chat and sends a json { "message": userQuery } in the request </item>
+        <item> Implement GET method for checking if the API is healthy. This uses route /healthy and responds back with "healthy" in case of active. Use this to display ChatBot is active or inactive </item>
+        <item> Handle API rate limiting , loading message 'Shauna is typing...' and implement retry logic for failed requests. </item>
+        </list>
+
+    <task> User Interface Development </task>
+    <list>
+        <item> Design a responsive chat interface using Angular Material components. </item>
+        <item> Implement a chat window that displays user messages and bot responses in a conversational format. </item>
+        <item> Add input field for user queries with support for multiline text and send button. </item>
+        <item> Include features like message timestamps, user avatars, and bot typing indicators. </item>
+        <item> Ensure the interface is accessible and follows best practices for UX design. </item>
+    </list>
+
+    <task> State Management </task>
+    <list>
+
+
+    <task> Voice Command Integration </task>
+    <list>
+    <item> Integrate Web Speech API to enable voice input for user queries. </item>
+    <item> Implement a microphone button that users can click to start and stop voice recording. </item>
+    <item> Convert voice input to text and populate the input field with the transcribed text. </item>
+    <item> Handle scenarios where voice recognition fails or is not supported by the browser. </item>
+    <item> Provide visual feedback during voice recording, such as a waveform animation or recording indicator. </item>
+    <item> Ensure voice commands are processed and sent to the API in the same manner as text input. </item>
+    <item> Fetch the response from API and convert it into voice and play it back to the user. ( Use a soft mild voice for this) </item>
+    </list>
+<task> Attchment Support </task>
+<list>
+<item> Implement file upload functionality to allow users to attach files in the chat. </item>
+<item> Support common file types such as images (JPEG, PNG), documents (PDF, DOCX), and text files (TXT). </item>
+<item> Display uploaded files as clickable links or thumbnails within the chat interface. </item>
+<item> Ensure files are sent to the API as part of the chat message payload. This ensures any queries asked within the document </item>
+<item> Handle file size limits and provide user feedback for unsupported file types. </item>
+</list>
+
+<task> Chat DashBoard </task>
+<list>
+<item> Implement a dashboard to view past 10 chat history with timestamps and user/bot identifiers. </item>
+<item> Allow users to search and filter chat history based on keywords or date ranges. </item>
+<item> Save the past history in Localstorage for quick retrieval </item> 
+
+<task> Styling: </task>
+<list>
+    <item> Apply consistent styling to the chat interface using CSS and Angular Material theming. </item>
+    <item> Ensure the chat interface is responsive and works well on different screen sizes. </item>
+    <item> Use animations and transitions to enhance the user experience during interactions. </item>
+    <item> Implement dark mode support for better accessibility and user preference. </item>
+    <item> Format the response in a user-friendly manner, including support for markdown, links, and images. </item>
+    <item> Read aloud the response using web speech API only if the user opts for speech to text input. </item>
+</list>
+
+    <task> Error Handling and Logging </task>
+    <list>
+        <item> Implement global error handling to catch and display user-friendly error messages. </item>
+        <item> Log API interactions and errors to the console for debugging purposes. </item>
+        <item> Use Angular's HttpInterceptor to manage request and response logging. </item>
+        <item> Provide fallback mechanisms in case of API failures, such as retrying requests or notifying users of issues. </item>
+    </list>
+
+    <task> Testing </task>
+    <list>
+        <item> Write unit tests for services, components, and utility functions using Jasmine and Karma. </item>
+        <item> Implement end-to-end tests using Protractor to simulate user interactions with the chat interface. </item>
+        <item> Ensure high test coverage and validate that all features work as expected across different scenarios. </item>
+    </list>
+
+    <task> Documentation and Deployment </task>
+    <list>
+        <item> Document the codebase with comments and README files explaining setup, usage, and deployment instructions. </item>
+        <item> Create a deployment script or guide for hosting the application on a web server or cloud platform. </item>
+        <item> Ensure the application is optimized for production with AOT compilation and minification. </item>
+    </list>
+</poml>

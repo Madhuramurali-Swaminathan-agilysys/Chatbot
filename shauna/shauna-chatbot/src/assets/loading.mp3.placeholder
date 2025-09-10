@@ -1,0 +1,14 @@
+<!-- This is a placeholder for loading.mp3 -->
+<!-- 
+To add the loading music:
+1. Find or create a gentle, soft background music file
+2. Convert it to MP3 format (10-30 seconds duration)
+3. Name it 'loading.mp3'
+4. Place it in the src/assets/ directory
+5. The AudioService will automatically load and use it
+
+For testing, you can use any short MP3 file as a placeholder.
+-->
+
+<!-- Temporary base64 encoded short beep for testing -->
+<!-- You should replace this with an actual loading.mp3 file -->

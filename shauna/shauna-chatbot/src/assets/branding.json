@@ -1,0 +1,41 @@
+{
+  "chatbot": {
+    "name": "Shauna",
+    "description": "An intelligent AI assistant designed to help you with your queries and provide conversational support.",
+    "avatar": "assets/images/shauna-avatar.png",
+    "version": "1.0.0",
+    "company": "AI Solutions Inc.",
+    "supportedLanguages": ["en", "es", "fr"],
+    "features": [
+      "Text-based conversations",
+      "Voice input and output",
+      "File attachment support",
+      "Chat history management",
+      "Multi-language support"
+    ],
+    "themes": {
+      "light": {
+        "primary": "#673ab7",
+        "accent": "#ff4081",
+        "background": "#fafafa"
+      },
+      "dark": {
+        "primary": "#9c27b0",
+        "accent": "#ff4081", 
+        "background": "#303030"
+      }
+    },
+    "sounds": {
+      "loadingMusic": "assets/audio/loading.mp3",
+      "messageNotification": "assets/audio/notification.mp3",
+      "voiceEnabled": "assets/audio/voice-on.mp3",
+      "voiceDisabled": "assets/audio/voice-off.mp3"
+    },
+    "voice": {
+      "defaultVoice": "soft-female",
+      "rate": 1.0,
+      "pitch": 1.0,
+      "volume": 0.8
+    }
+  }
+}
